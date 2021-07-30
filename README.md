@@ -68,6 +68,9 @@ Assertion means checking whether the result is matching the expected value. This
 
 Here is a list of all the assertions that jest offers - @ https://jestjs.io/docs/expect
 
+----------------------------------
+# To be Completed
+
 ### Testing Asynchronous Code:
 
 Here are some examples on how we can test asynchronous code in JavaScript using Jest - @ https://jestjs.io/docs/asynchronous
@@ -78,47 +81,10 @@ Here are some examples on how we can test asynchronous code in JavaScript using 
 
 This function allows us to mock a single function. Let's see an example to mock a synchronous function jest.fn().
 
-_greeting.js_
-
-```
-export const goodMorning = () => "Good Morning";
-
-export const goodNight = () => "Good Night";
-
-export function greeting(morning) {
-  if(morning)
-    return goodMorning();
-  return goodNight();
-}
-```
-
-Let us mock only the greeting function here. Usually the real use case for jest mocks is for asynchronous api calls. But let's try for synchronous functions to get familiar with the functions.
-
-_greeting.test.js_
-
-```
-import { greeting, goodMorning, goodNight } from './greeting.js';
-
-describe('greeting', () => {
-  test('good morning', () => {
-    const mockGreeting = jest.fn(greeting);
-      .mockReturnValueOnce('Good Morning');
-
-    const result = mockGreeting(true);
-
-    expect(mockGreeting).toHaveBeenCalledWith(true);
-    expect(goodMorning).toBeCalled();
-
-    expect(goodNight).not.toBeCalled();
-    expect(result).toEqual('Good Morning');
-
-  });
-});
-```
-
 **2. jest.mock()**
 
 This function allows to mock an entire module and use all the methods and properties it contains.
 
 **3. jest.spyOn()**
+
 
