@@ -68,8 +68,7 @@ Assertion means checking whether the result is matching the expected value. This
 
 Here is a list of all the assertions that jest offers - @ https://jestjs.io/docs/expect
 
-----------------------------------
-# To be Completed
+------------------------
 
 ### Testing Asynchronous Code:
 
@@ -77,14 +76,80 @@ Here are some examples on how we can test asynchronous code in JavaScript using 
 
 ### Mocking Functions or Modules
 
-**1. jest.fn()**
+- Mocking functions helps when a function call external functions or Api's and we want to test only one unit of our code independently. For example, in a situation where a function makes an Api call. If the Api is down, our test would fail even though our function itself is working fine. 
 
-This function allows us to mock a single function. Let's see an example to mock a synchronous function jest.fn().
+- Mocking also gives us access to the many functions that Jest offers.
 
-**2. jest.mock()**
+- There are three ways we can mock functions : 
 
-This function allows to mock an entire module and use all the methods and properties it contains.
+  * jest.fn() - allows us to mock a single function
+  * jest.mock() - allows us to mock an entire module and use all the methods and properties it contains 
+  * jest.spyOn()
 
-**3. jest.spyOn()**
+**Mocking Example using jest.mock()**
+
+_api.js_
+```
+const axios = require('axios');
+
+async function get(inputText) {
+  try {
+    const res = await axios.get(`https://pokeapi.co/api/v2/pokemon/${inputText}`);
+   
+    return res.data.forms[0].name;
+  } catch (err) {
+   
+    return 'Cannot get pokemon';
+  }
+}
+
+module.exports = {
+  get
+}
+```
+
+_api.test.js_
+
+```
+const axios = require('axios');
+
+const api = require('../api');
+
+jest.mock('axios');
+
+describe('pokemon-api', () => {
+  beforeEach(() => {
+    axios.get.mockReset();
+  });
+
+  describe('#get', () => {
+    it('maps the response', async () => {
+      const res = { data: { forms: [ { name: 'bulbasaur' } ] } } ;
+      axios.get.mockResolvedValue(res);
+
+      const pokemon = await api.get('1');
+
+      expect(pokemon).toEqual(res.data.forms[0].name);
+    });
+
+    describe('on a non-200 response', () => {
+      it('returns error', async () => {
+        axios.get.mockRejectedValue({ status: '404' });
+
+        const pokemon = await api.get('1l');
+
+        expect(pokemon).toMatch(/cannot get pokemon/i);
+      });
+    });
+  });
+});
+```
+--------------------------
+**As an alternative to jest mock functions we can use mock service worker with React Testing Library. Here is an example of of mocking using mock service worker - @ https://github.com/shar09/msw-react**
+
+---------------------------
+**Additional References**
+- @ https://www.pluralsight.com/guides/how-does-jest.fn()-work
+- @ https://www.youtube.com/watch?v=7r4xVDI2vho
 
 
